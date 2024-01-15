@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  node:
+    container_name: node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/node/app
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - ${PORT}:${PORT}
