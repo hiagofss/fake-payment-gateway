@@ -1,7 +1,10 @@
 import Fastify from 'fastify';
 import router from './routes/index.js';
+import MongoDbService from './infra/database/mongodb.database.service.js';
 
 const app = Fastify({ logger: true });
+
+new MongoDbService().connectionMongoDb(app);
 
 app.addHook('onRequest', (request, reply, done) => {
   request.log.info(

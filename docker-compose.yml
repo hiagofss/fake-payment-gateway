@@ -1,7 +1,7 @@
-version: "3.1"
+version: '3.1'
 
 services:
-  node:
+  app:
     container_name: node
     build:
       context: .
@@ -12,11 +12,25 @@ services:
     restart: unless-stopped
     ports:
       - ${PORT}:${PORT}
+    depends_on:
+      - rabbitmq
+      - mongodb
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management
     restart: unless-stopped
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
     env_file: .env
     ports:
       - 5672:5672
       - 15672:15672
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/mongodb:/data/db
+    env_file: .env
+    ports:
+      - 27017:27017
