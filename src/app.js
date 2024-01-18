@@ -1,35 +1,19 @@
 import Fastify from 'fastify';
 import router from './routes/index.js';
-import MongoDbService from './infra/database/mongodb.database.service.js';
+import { PaymentRouter } from './routes/payment.routes.js';
+import { MongoDbService } from './infra/database/mongodb.database.service.js';
+import { RequestHooks } from './hooks/requests.hooks.js';
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: false });
 
-new MongoDbService().connectionMongoDb(app);
+new MongoDbService(app).connectionMongoDb();
 
-app.addHook('onRequest', (request, reply, done) => {
-  request.log.info(
-    {
-      url: request.url,
-      method: request.method,
-      ip: request.ip,
-    },
-    'request received.',
-  );
-  done();
-});
-
-app.addHook('onResponse', (request, reply, done) => {
-  request.log.info(
-    {
-      url: request.raw.originalUrl,
-      statusCode: reply.raw.statusCode,
-    },
-    'request completed.',
-  );
-  done();
-});
+const requestHooks = new RequestHooks(app);
+// requestHooks.onRequest();
+// requestHooks.onResponse();
 
 app.register(router, { prefix: '/api' });
+app.register(PaymentRouter.router, { prefix: '/api/payment' });
 
 app.setErrorHandler((error, request, reply) => {
   app.log.error(error);

@@ -1,17 +1,7 @@
-import { QueueService } from '../services/queue.service.js';
+import { HealthCheckService } from '../services/healthcheck.servive.js';
 
 async function router(app) {
-  app.get('/', async function handler(request, reply) {
-    return { message: 'Hello World!!!' };
-  });
-
-  app.get('/health', await QueueService.getStatus);
-
-  app.route({
-    method: 'GET',
-    url: '/hello',
-    handler: await QueueService.getStatus,
-  });
+  app.get('/healthcheck', HealthCheckService.getStatus);
 }
 
 export default router;

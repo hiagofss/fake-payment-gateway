@@ -1,10 +1,11 @@
 export class QueueDto {
-  id
-  name
-  data
-  opts
-  timestamp
-  processedOn
-  finishedOn
-  progress
+  id;
+  key;
+  name;
+  data;
+  opts;
+  timestamp;
+  processedOn;
+  finishedOn;
+  progress;
 }

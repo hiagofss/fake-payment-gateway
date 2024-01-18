@@ -25,7 +25,8 @@
   "dependencies": {
     "@fastify/mongodb": "^8.0.0",
     "amqplib": "^0.10.3",
-    "fastify": "^4.25.2"
+    "fastify": "^4.25.2",
+    "mongoose": "^8.1.0"
   },
   "devDependencies": {
     "prettier": "3.2.2"

@@ -1,0 +1,23 @@
+@baseUrl = http://localhost
+@port = 3333
+@host = {{baseUrl}}:{{port}}
+
+
+### Health check
+# @name HealthCheck
+GET {{host}}/api/healthcheck
+
+### Payment create new bill
+# @name PaymentCreateBill
+POST {{host}}/api/payment/bill
+Content-Type: application/json
+
+{
+    "key": "food",
+    "value": "Category produts of food"
+}
+
+### Payment get bill
+# @name PaymentGetBill
+GET {{host}}/api/payment/bill/123456789
+
