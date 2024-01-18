@@ -7,7 +7,7 @@ export class PaymentController {
 
   async addBill(request, reply) {
     const data = request.body;
-    const bill = new PaymentService(this.app).addBill(data);
+    const bill = await new PaymentService(this.app).addBill(data);
 
     reply.send(bill);
   }

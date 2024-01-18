@@ -16,7 +16,11 @@ export class PaymentService {
     queueDto.value = data.value;
 
     const response = await this.queueService.addJob(data);
-    console.log(response);
+    return {
+      status: 'ok',
+      message: 'Bill added and ready to process.',
+      data: response,
+    };
   }
 
   async processBill() {
