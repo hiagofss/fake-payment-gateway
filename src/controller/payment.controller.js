@@ -13,9 +13,15 @@ export class PaymentController {
   }
 
   async getBill(request, reply) {
-    const { billId } = request.params;
+    const { orderId } = request.params;
 
-    const bill = await new PaymentService(this.app).getBill(billId);
+    const bill = await new PaymentService(this.app).getBill(orderId);
+
+    reply.send(bill);
+  }
+
+  async processBill(request, reply) {
+    const bill = await new PaymentService(this.app).processBill();
 
     reply.send(bill);
   }

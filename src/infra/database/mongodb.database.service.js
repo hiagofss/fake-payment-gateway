@@ -4,7 +4,6 @@ export class MongoDbService {
   constructor(app, mongoDbConnectionString = process.env.MONGO_DB_URL) {
     this.app = app;
     this.mongoDbConnectionString = mongoDbConnectionString;
-    console.log('mongoDbConnectionString', mongoDbConnectionString);
   }
 
   connectionMongoDb() {
@@ -21,13 +20,37 @@ export class MongoDbService {
     return db.collection(collectionName);
   }
 
-  async insert(collectionName, data) {
-    const collection = await PaymentMethodModel.insertMany(data);
-    await collection.insertOne(data);
+  async insert(data) {
+    const paymentMethod = await new PaymentMethodModel(data);
+
+    try {
+      await paymentMethod.save();
+    } catch (error) {
+      console.log('error', error);
+    }
+    return paymentMethod;
   }
 
-  async update(collectionName, data) {
-    const collection = await this.getCollection(collectionName);
-    await collection.updateOne({ id: data.id }, { $set: data });
+  async updateStatus(id, status) {
+    const paymentMethod = await PaymentMethodModel.findOneAndUpdate(
+      {
+        orderId: id,
+      },
+      {
+        status: status,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return paymentMethod;
+  }
+
+  async getById(id) {
+    const paymentMethod = await PaymentMethodModel.findOne({
+      orderId: id,
+    });
+    return paymentMethod;
   }
 }

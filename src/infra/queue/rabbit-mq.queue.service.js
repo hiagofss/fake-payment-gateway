@@ -4,8 +4,6 @@ export class RabbitMqQueueService {
     queueName = process.env.RABBITMQ_QUEUE_NAME,
     queueUrl = process.env.RABBITMQ_QUEUE_URL,
   ) {
-    console.log('queueName', queueName);
-    console.log('queueUrl', queueUrl);
     this.queueName = queueName;
     this.queueUrl = queueUrl;
   }
@@ -22,14 +20,27 @@ export class RabbitMqQueueService {
     await connection.close();
   }
 
-  processJob() {
-    throw new Error('Method not implemented.');
+  async processJob() {
+    const connection = await this.connectRabbit();
+    const channel = await connection.createChannel();
+    await channel.assertQueue(this.queueName);
+    const job = await channel.get(this.queueName);
+    await channel.ack(job);
+    await channel.close();
+    await connection.close();
+
+    return JSON.parse(job.content.toString());
   }
-  getJob(id) {
-    throw new Error('Method not implemented.');
-  }
-  getJobs() {
-    throw new Error('Method not implemented.');
+
+  async hasJob() {
+    const connection = await this.connectRabbit();
+    const channel = await connection.createChannel();
+    await channel.assertQueue(this.queueName);
+    const queue = await channel.checkQueue(this.queueName);
+    await channel.close();
+    await connection.close();
+
+    return queue;
   }
 
   async connectRabbit() {

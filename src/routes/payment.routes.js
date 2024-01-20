@@ -1,5 +1,4 @@
 import { PaymentController } from '../controller/payment.controller.js';
-import { PaymentService } from '../services/payment.service.js';
 export class PaymentRouter {
   static async router(app) {
     app.route({
@@ -9,8 +8,13 @@ export class PaymentRouter {
     });
     app.route({
       method: 'GET',
-      url: '/bill/:billId',
+      url: '/bill/:orderId',
       handler: new PaymentController(app).getBill,
+    });
+    app.route({
+      method: 'POST',
+      url: '/bill/process',
+      handler: new PaymentController(app).processBill,
     });
   }
 }

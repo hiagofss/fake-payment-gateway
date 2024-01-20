@@ -13,11 +13,22 @@ POST {{host}}/api/payment/bill
 Content-Type: application/json
 
 {
-    "key": "food",
-    "value": "Category produts of food"
+    "orderId": "{{$guid}}",
+    "paymentMethod":{
+      "type": "CREDIT_CARD",
+      "card": {
+        "band": "MASTERCARD",
+        "number": "{{$randomInt 1000 9999}}-{{$randomInt 1000 9999}}-{{$randomInt 1000 9999}}-{{$randomInt 1000 9999}}",
+        "cvv": "{{$randomInt 100 999}}"
+      }
+    }
 }
+
+### Payment process bill
+# @name PaymentProcessBill
+POST {{host}}/api/payment/bill/process
 
 ### Payment get bill
 # @name PaymentGetBill
-GET {{host}}/api/payment/bill/123456789
+GET {{host}}/api/payment/bill/329ce82f-f83f-4cce-9a45-431cb95ff95f
 

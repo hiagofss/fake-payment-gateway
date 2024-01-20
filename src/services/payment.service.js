@@ -10,24 +10,43 @@ export class PaymentService {
   databaseService = new MongoDbService();
 
   async addBill(data) {
-    console.log(data);
-    const queueDto = new QueueDto();
-    queueDto.key = data.key;
-    queueDto.value = data.value;
+    const queueDtoObj = new QueueDto(data);
+    await this.queueService.addJob(queueDtoObj);
 
-    const response = await this.queueService.addJob(data);
+    const recordCreated = await this.databaseService.insert(queueDtoObj);
+
     return {
       status: 'ok',
       message: 'Bill added and ready to process.',
-      data: response,
+      data: recordCreated,
     };
   }
 
   async processBill() {
-    this.queueService.processJob();
+    const awaitQueue = await this.queueService.hasJob();
+    if (awaitQueue.messageCount < 1) {
+      return {
+        status: 'ok',
+        message: 'No bills to process.',
+      };
+    }
+
+    const bill = await this.queueService.processJob();
+
+    const billUpdate = await this.databaseService.updateStatus(
+      bill.orderId,
+      'processed',
+    );
+
+    return {
+      status: 'ok',
+      message: 'Bill processed.',
+      data: billUpdate,
+    };
   }
 
   async getBill(id) {
-    return { idReceived: id };
+    const bill = await this.databaseService.getById(id);
+    return bill;
   }
 }
