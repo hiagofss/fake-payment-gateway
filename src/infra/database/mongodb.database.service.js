@@ -1,14 +1,21 @@
 import mongoose from 'mongoose';
 import { PaymentMethodModel } from './models/payment-method.model.js';
 export class MongoDbService {
-  constructor(app, mongoDbConnectionString = process.env.MONGO_DB_URL) {
+  constructor(
+    app,
+    mongoDbConnectionString = process.env.MONGO_DB_URL,
+    mongoDbDatabase = process.env.MONGO_INITDB_DATABASE,
+  ) {
     this.app = app;
     this.mongoDbConnectionString = mongoDbConnectionString;
+    this.mongoDbDatabase = mongoDbDatabase;
   }
 
   connectionMongoDb() {
     mongoose
-      .connect(this.mongoDbConnectionString, {})
+      .connect(this.mongoDbConnectionString, {
+        dbName: this.mongoDbDatabase,
+      })
       .then(() => {
         console.log('MongoDB connected…');
       })

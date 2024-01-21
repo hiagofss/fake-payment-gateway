@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import router from './routes/index.js';
+import { router } from './routes/index.js';
 import { PaymentRouter } from './routes/payment.routes.js';
 import { MongoDbService } from './infra/database/mongodb.database.service.js';
 import { RequestHooks } from './hooks/requests.hooks.js';

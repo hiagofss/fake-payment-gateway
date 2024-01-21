@@ -11,7 +11,16 @@ export class PaymentService {
 
   async addBill(data) {
     const queueDtoObj = new QueueDto(data);
-    await this.queueService.addJob(queueDtoObj);
+
+    try {
+      await this.queueService.addJob(queueDtoObj);
+    } catch (error) {
+      return {
+        status: 'error',
+        message: 'Error adding bill to queue.',
+        data: error,
+      };
+    }
 
     const recordCreated = await this.databaseService.insert(queueDtoObj);
 
@@ -31,18 +40,26 @@ export class PaymentService {
       };
     }
 
-    const bill = await this.queueService.processJob();
+    try {
+      const bill = await this.queueService.processJob();
 
-    const billUpdate = await this.databaseService.updateStatus(
-      bill.orderId,
-      'processed',
-    );
+      const billUpdate = await this.databaseService.updateStatus(
+        bill.orderId,
+        'processed',
+      );
 
-    return {
-      status: 'ok',
-      message: 'Bill processed.',
-      data: billUpdate,
-    };
+      return {
+        status: 'ok',
+        message: 'Bill processed.',
+        data: billUpdate,
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        message: 'Error processing bill.',
+        data: error,
+      };
+    }
   }
 
   async getBill(id) {

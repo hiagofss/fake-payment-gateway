@@ -20,7 +20,7 @@ services:
     image: rabbitmq:3-management
     restart: unless-stopped
     volumes:
-      - ./data/rabbitmq:/var/lib/rabbitmq
+      - data_rabbitmq:/var/lib/rabbitmq
     env_file: .env
     ports:
       - 5672:5672
@@ -30,7 +30,10 @@ services:
     image: mongo:latest
     restart: unless-stopped
     volumes:
-      - ./data/mongodb:/data/db
+      - data_mongodb:/data/db
     env_file: .env
     ports:
       - 27017:27017
+volumes:
+  data_rabbitmq:
+  data_mongodb:

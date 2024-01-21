@@ -4,4 +4,4 @@ async function router(app) {
   app.get('/healthcheck', HealthCheckService.getStatus);
 }
 
-export default router;
+export { router };
