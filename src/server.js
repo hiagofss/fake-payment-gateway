@@ -1,6 +1,5 @@
 import app from './app.js';
-// const PORT = parseInt(process.env.PORT as string, 3333);
-const PORT = 3333;
+const PORT = parseInt(process.env.PORT);
 
 const startServer = async () => {
   try {
