@@ -3,6 +3,7 @@ import { router } from './routes/index.js';
 import { PaymentRouter } from './routes/payment.routes.js';
 import { MongoDbService } from './infra/database/mongodb.database.service.js';
 import { RequestHooks } from './hooks/requests.hooks.js';
+import { SchedulerJobs } from './utils/scheduler-jobs.js';
 
 const app = Fastify({ logger: true });
 
@@ -14,6 +15,8 @@ const requestHooks = new RequestHooks(app);
 
 app.register(router, { prefix: '/api' });
 app.register(PaymentRouter.router, { prefix: '/api/payment' });
+
+new SchedulerJobs(app).run();
 
 app.setErrorHandler((error, request, reply) => {
   app.log.error(error);

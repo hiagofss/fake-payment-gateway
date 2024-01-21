@@ -9,41 +9,42 @@ export class RabbitMqQueueService {
   }
 
   async addJob(data) {
-    const connection = await this.connectRabbit();
-    const channel = await connection.createChannel();
-    await channel.assertQueue(this.queueName);
+    const { connection, channel } = await this.connectRabbit();
     await channel.sendToQueue(
       this.queueName,
       Buffer.from(JSON.stringify(data)),
     );
-    await channel.close();
-    await connection.close();
+    this.closeRabbit(connection, channel);
   }
 
   async processJob() {
-    const connection = await this.connectRabbit();
-    const channel = await connection.createChannel();
-    await channel.assertQueue(this.queueName);
+    const { connection, channel } = await this.connectRabbit();
+
     const job = await channel.get(this.queueName);
     await channel.ack(job);
-    await channel.close();
-    await connection.close();
+    this.closeRabbit(connection, channel);
 
     return JSON.parse(job.content.toString());
   }
 
   async hasJob() {
-    const connection = await this.connectRabbit();
-    const channel = await connection.createChannel();
-    await channel.assertQueue(this.queueName);
+    const { connection, channel } = await this.connectRabbit();
     const queue = await channel.checkQueue(this.queueName);
-    await channel.close();
-    await connection.close();
+    this.closeRabbit(connection, channel);
 
     return queue;
   }
 
   async connectRabbit() {
-    return await amqplib.connect(this.queueUrl);
+    const connection = await amqplib.connect(this.queueUrl);
+    const channel = await connection.createChannel();
+    await channel.assertQueue(this.queueName);
+
+    return { connection, channel };
+  }
+
+  async closeRabbit(connection, channel) {
+    await channel.close();
+    await connection.close();
   }
 }

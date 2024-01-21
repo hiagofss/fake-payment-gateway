@@ -24,9 +24,11 @@
   "homepage": "https://github.com/hiagofss/fake-payment-gateway#readme",
   "dependencies": {
     "@fastify/mongodb": "^8.0.0",
+    "@fastify/schedule": "^4.1.1",
     "amqplib": "^0.10.3",
     "fastify": "^4.25.2",
-    "mongoose": "^8.1.0"
+    "mongoose": "^8.1.0",
+    "toad-scheduler": "^3.0.0"
   },
   "devDependencies": {
     "prettier": "3.2.2"

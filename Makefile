@@ -7,6 +7,6 @@ db-up:
 app-up:
 	@docker compose run --service-ports app
 
-.PHONY: dk-down ## down all services
-dc-down:
+.PHONY: down ## down all services
+down:
 	@docker compose down --remove-orphans -v
