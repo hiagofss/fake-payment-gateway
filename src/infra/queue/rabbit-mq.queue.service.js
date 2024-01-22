@@ -17,6 +17,18 @@ export class RabbitMqQueueService {
     this.closeRabbit(connection, channel);
   }
 
+  async publishJobWithConfirmChannel(data) {
+    const { connection, channel } = await this.connectRabbit();
+    await channel.publish(
+      '',
+      this.queueName,
+      Buffer.from(JSON.stringify(data)),
+      { persistent: true },
+    );
+    await channel.waitForConfirms();
+    this.closeRabbit(connection, channel);
+  }
+
   async processJob() {
     const { connection, channel } = await this.connectRabbit();
 
@@ -29,10 +41,15 @@ export class RabbitMqQueueService {
 
   async consumeJob(callback) {
     const { connection, channel } = await this.connectRabbit();
-    await channel.consume(this.queueName, async (job) => {
-      await channel.ack(job);
-      callback(JSON.parse(job.content.toString()));
-    });
+    channel.prefetch(3);
+    await channel.consume(
+      this.queueName,
+      async (job) => {
+        await channel.ack(job);
+        callback(JSON.parse(job.content.toString()));
+      },
+      { consumerTag: 'payment-gateway-consumer' },
+    );
     this.closeRabbit(connection, channel);
   }
 
