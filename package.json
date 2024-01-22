@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/hiagofss/fake-payment-gateway#readme",
   "dependencies": {
-    "@fastify/mongodb": "^8.0.0",
     "@fastify/schedule": "^4.1.1",
     "amqplib": "^0.10.3",
     "fastify": "^4.25.2",
