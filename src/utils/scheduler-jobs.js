@@ -14,7 +14,7 @@ export class SchedulerJobs {
     const task = new AsyncTask(
       'Process payments',
       async () => {
-        await this.processPayments();
+        await this.consumesPayments();
       },
       (error) => {
         this.app.log.error(
@@ -24,7 +24,7 @@ export class SchedulerJobs {
     );
 
     const job = new SimpleIntervalJob(
-      { seconds: 5, runImmediately: true },
+      { seconds: 15, runImmediately: true },
       task,
     );
 
@@ -43,5 +43,10 @@ export class SchedulerJobs {
     this.app.log.info(
       `SchedulerJobs.processPayments() - payments: ${JSON.stringify(bill)}`,
     );
+  }
+
+  async consumesPayments() {
+    const paymentService = new PaymentService(this.app);
+    await paymentService.consumeMessages();
   }
 }

@@ -62,6 +62,15 @@ export class PaymentService {
     }
   }
 
+  async consumeMessages() {
+    await this.queueService.consumeJob(async (bill) => {
+      await this.databaseService.updateStatus(bill.orderId, 'processed');
+      this.app.log.info(
+        `PaymentService.consumeMessages() - bill: ${JSON.stringify(bill)}`,
+      );
+    });
+  }
+
   async getBill(id) {
     const bill = await this.databaseService.getById(id);
     return bill;

@@ -27,6 +27,15 @@ export class RabbitMqQueueService {
     return JSON.parse(job.content.toString());
   }
 
+  async consumeJob(callback) {
+    const { connection, channel } = await this.connectRabbit();
+    await channel.consume(this.queueName, async (job) => {
+      await channel.ack(job);
+      callback(JSON.parse(job.content.toString()));
+    });
+    this.closeRabbit(connection, channel);
+  }
+
   async hasJob() {
     const { connection, channel } = await this.connectRabbit();
     const queue = await channel.checkQueue(this.queueName);
